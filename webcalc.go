@@ -1,45 +1,48 @@
 package main
 
 import (
-	"log"
 	"github.com/kataras/iris"
 )
 
+type Calculation struct {
+	First 	int
+	Second 	int
+	Result  int
+}
+
 func main() {
     api := iris.New()
-    api.Get("/add", add)
-    api.Get("/multiply", multiply)
+    api.Get("/add", func(ctx *iris.Context) {
+    	if err := ctx.Render("add.html", nil); err != nil {
+    		iris.Logger.Printf(err.Error())
+    	}
+    })
+    api.Post("/add", func(ctx *iris.Context) {
+		c := Calculation{}
+		err := ctx.ReadForm(&c)
+		if err != nil {
+    		iris.Logger.Printf(err.Error())
+		}
+		c.Result = c.First+c.Second
+    	if err := ctx.Render("add.html", map[string]interface{}{"First": c.First, "Second": c.Second, "Result": c.Result}); err != nil {
+    		iris.Logger.Printf(err.Error())
+    	}
+	})
+    api.Get("/multiply", func(ctx *iris.Context) {
+    	if err := ctx.Render("multiply.html", nil); err != nil {
+    		iris.Logger.Printf(err.Error())
+    	}
+    })
+    api.Post("/multiply", func(ctx *iris.Context) {
+		c := Calculation{}
+		err := ctx.ReadForm(&c)
+		if err != nil {
+    		iris.Logger.Printf(err.Error())
+		}
+		c.Result = c.First*c.Second
+    	if err := ctx.Render("multiply.html", map[string]interface{}{"First": c.First, "Second": c.Second, "Result": c.Result}); err != nil {
+    		iris.Logger.Printf(err.Error())
+    	}
+	})
     api.Listen(":8888")
-}
-
-func add(ctx *iris.Context){
-	a, err := ctx.URLParamInt("first")
-	if err != nil {
-		log.Print(err)
-		ctx.Write("Invalid input")
-		return
-	}
-	b, err := ctx.URLParamInt("second")
-	if err != nil {
-		log.Print(err)
-		ctx.Write("Invalid input")
-		return
-	}
-	ctx.MustRender("add.html", map[string]interface{}{"a": a, "b": b, "c": a+b})
-}
-
-func multiply(ctx *iris.Context){
-	a, err := ctx.URLParamInt("first")
-	if err != nil {
-		log.Print(err)
-		ctx.Write("Invalid input")
-		return
-	}
-	b, err := ctx.URLParamInt("second")
-	if err != nil {
-		log.Print(err)
-		ctx.Write("Invalid input")
-		return
-	}
-	ctx.MustRender("multiply.html", map[string]interface{}{"a": a, "b": b, "c": a*b})
 }
