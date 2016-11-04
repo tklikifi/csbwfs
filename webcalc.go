@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"github.com/kataras/iris"
 )
@@ -26,7 +25,7 @@ func add(ctx *iris.Context){
 		ctx.Write("Invalid input")
 		return
 	}
-	ctx.Write(fmt.Sprintf("%d + %d = %d", a, b, a+b))
+	ctx.MustRender("add.html", map[string]interface{}{"a": a, "b": b, "c": a+b})
 }
 
 func multiply(ctx *iris.Context){
@@ -42,5 +41,5 @@ func multiply(ctx *iris.Context){
 		ctx.Write("Invalid input")
 		return
 	}
-	ctx.Write(fmt.Sprintf("%d * %d = %d", a, b, a*b))
+	ctx.MustRender("multiply.html", map[string]interface{}{"a": a, "b": b, "c": a*b})
 }
