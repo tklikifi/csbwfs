@@ -11,5 +11,5 @@ func main() {
 }
 
 func hello(ctx *iris.Context){
-   ctx.Write("Hello web!")
+   ctx.Write("Hello Web!")
 }
